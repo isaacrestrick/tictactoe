@@ -1,10 +1,10 @@
-export type GameState = {
+type GameState = {
     cells: Array<Array<string | undefined>>
     nextTurn: string
     winner: string | undefined
 }
 
-export function detectWinner(game: GameState) {
+function detectWinner(game: GameState) {
     const cells = game.cells
     if (cells[0][0] !== undefined && cells[0][0] == cells[0][1] && cells[0][1] == cells[0][2]) {
         // top row
@@ -31,9 +31,25 @@ export function detectWinner(game: GameState) {
         // high to low diagonal
         return cells[0][2]  
     }
+    const emptyCells = countEmptyCells(game)
+    if (emptyCells === 0) {
+        return "tie"
+    }
     return undefined
 }
 
+
+function countEmptyCells(game: GameState): number {
+    let emptyCells: number = 0
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (game.cells[i][j] === undefined) {
+                emptyCells += 1
+            }
+        }
+    }
+    return emptyCells
+}
 export function makeMove(game: GameState, row: number, col: number): GameState {
     if (game.winner || (game.cells[row][col] !== undefined)) {
         return game
@@ -53,16 +69,4 @@ export const startingGame: GameState = {
     cells: [[undefined, undefined, undefined], [undefined, undefined, undefined], [undefined, undefined, undefined]],
     nextTurn: 'X',
     winner: undefined
-}
-
-export function countEmptyCells(game: GameState): number {
-    let emptyCells: number = 0
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (game.cells[i][j] === undefined) {
-          emptyCells += 1
-        }
-      }
-    }
-    return emptyCells
 }
