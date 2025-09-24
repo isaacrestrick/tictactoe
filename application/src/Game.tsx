@@ -1,34 +1,52 @@
-import { useState } from 'react'
-import { makeMove, startingGame} from '/src/tictactoe.ts'
+
+import { makeMove, startingGame } from '/src/tictactoe.ts'
 import {
   useQuery,
+  useMutation,
+  useQueryClient
 } from '@tanstack/react-query'
+import axios from 'axios'
+
+
 
 export const Game = () => {
+    const queryClient = useQueryClient()
     const { isPending, error, data } = useQuery({
-        queryKey: ['repoData'],
+        queryKey: ['game'],
         queryFn: () =>
-            fetch('https://api.github.com/repos/TanStack/query').then((res) =>
+            fetch('/game').then((res) =>
                 res.json(),
         ),
     })
-const [game, setGame] = useState(startingGame)
+    const mutation = useMutation({
+        mutationFn: ({row, col}: {row: number, col: number}) =>
+            axios.post("/move", {row, col}).then(() =>
+                {console.log(
+                    "made a move"
+                )
+            }
+        ),
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['game']})
+        }
+    })
+    const game = data
     
-    if (isPending) return <p>'Loading...'</p>
+    if (isPending) return <p>'Loading Boards...'</p>
 
-    if (error) return <p>'An error has occurred: ' + error.message</p>
+    if (error) return <p>'An error has occurred: ' + {error.message}</p>
 
     const clickCell = (row: number, col: number) => {
-        setGame(makeMove(game, row, col))
+        mutation.mutate({row: row, col: col})
       
     }
 
     const resetBoard = () => {
       console.log("reset")
-      setGame(startingGame)
+      mutation.mutate({row: -1, col: -1})
     }
 
-    const Cell = ({row, col}) => {
+    const Cell = ({row, col}: {row: number, col: number}) => {
       return <td className="p-8 text-8xl" onClick={() => clickCell(row, col)}>{game.cells[row][col] || '_' }</td>
     }
 
