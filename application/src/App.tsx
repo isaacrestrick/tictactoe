@@ -13,7 +13,7 @@ const App = () => {
     const [currentMatchId, setCurrentMatchId] = useState(null)
 
     useEffect(() => {
-      if (localStorage.getItem("currentMatch") !== null) {
+      if (localStorage.getItem("currentMatch") !== null && localStorage.getItem("currentMatch") !== undefined) {
         setCurrentMatchId(localStorage.getItem("currentMatch"))
       }
     }, [])
