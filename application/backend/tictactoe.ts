@@ -1,9 +1,8 @@
-import { start } from "repl"
-
 export type GameState = {
     cells: Array<Array<string | null>>
     nextTurn: string
     winner: string | null
+    id: string
 }
 
 function detectWinner(game: GameState) {
@@ -40,6 +39,9 @@ function detectWinner(game: GameState) {
     return null
 }
 
+function createGameId(): string {
+    return crypto.randomUUID()
+}
 
 function countEmptyCells(game: GameState): number {
     let emptyCells: number = 0
@@ -52,26 +54,34 @@ function countEmptyCells(game: GameState): number {
     }
     return emptyCells
 }
+
 export function makeMove(game: GameState, row: number, col: number): GameState {
     if (row === -1 && col === -1) {
-        return startingGame
+        const resetGame = createNewGame()
+        resetGame.id = game.id
+        return resetGame
     }
     if (game.winner || (game.cells[row][col] !== null)) {
         return game
     }
-    const nextGame: GameState = {
+    const nextGameState: GameState = {
         cells: structuredClone(game.cells),
         nextTurn: game.nextTurn === 'X' ? 'O': 'X',
-        winner: game.winner
+        winner: game.winner,
+        id: game.id
     }
 
-    nextGame.cells[row][col] = game.nextTurn
-    nextGame.winner = detectWinner(nextGame)
-    return nextGame
+    nextGameState.cells[row][col] = game.nextTurn
+    nextGameState.winner = detectWinner(nextGameState)
+    return nextGameState
 }
 
-export const startingGame: GameState = {
-    cells: [[null, null, null], [null, null, null], [null, null, null]],
-    nextTurn: 'X',
-    winner: null
+export const createNewGame = () => {
+    const newGameState: GameState = {
+        cells: [[null, null, null], [null, null, null], [null, null, null]],
+        nextTurn: 'X',
+        winner: null,
+        id: createGameId()
+    }
+    return newGameState
 }
