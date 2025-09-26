@@ -13,7 +13,7 @@ export const Game = (props) => {
     const queryClient = useQueryClient()
     useEffect(() => {
       const s = io()
-      s.on('update', () => {
+      s.on('update_board', () => {
         queryClient.invalidateQueries({queryKey: [`game/${props.id}`]})
       })
       return () => s.disconnect()

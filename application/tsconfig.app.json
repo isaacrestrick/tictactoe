@@ -23,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "backend/tictactoe.ts", "backend/server.ts", "backend/tictactoe.ts"]
+  "include": ["src", "backend/server/tictactoe.ts", "backend/server/server.ts", "backend/server/tictactoe.ts"]
 }

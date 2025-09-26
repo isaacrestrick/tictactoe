@@ -85,3 +85,37 @@ export const createNewGame = () => {
     }
     return newGameState
 }
+
+export const objectToGameState = (obj) => {
+    const gameState: GameState = {
+        cells: [...obj.cells],
+        nextTurn: obj.nextTurn,
+        winner: obj.winner,
+        id: obj.id
+    }
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (gameState.cells[i][j] === 'NULL') {
+                gameState.cells[i][j] = null
+            }
+        }
+    }
+    return gameState
+}
+
+export const gameStateToObj = (gameState: GameState) => {
+    const obj = {
+        cells: [...gameState.cells],
+        nextTurn: gameState.nextTurn,
+        winner: gameState.winner,
+        id: gameState.id
+    }
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (gameState.cells[i][j] === null) {
+                gameState.cells[i][j] = 'NULL'
+            }
+        }
+    }
+    return obj
+}
