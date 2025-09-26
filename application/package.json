@@ -1,10 +1,10 @@
 {
-  "name": "frontend",
+  "name": "application",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts --watch",
+    "dev": "tsx backend/server.ts --watch",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -17,6 +17,7 @@
     "express": "^5.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "socket.io": "^4.8.1",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
     "vite-express": "^0.21.1"
