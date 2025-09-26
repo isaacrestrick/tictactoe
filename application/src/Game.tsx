@@ -4,23 +4,33 @@ import {
   useMutation,
   useQueryClient
 } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { io, Socket } from "socket.io-client"
 
 export const Game = (props) => {
+
     const queryClient = useQueryClient()
+    useEffect(() => {
+      const s = io()
+      s.on('update', () => {
+        queryClient.invalidateQueries({queryKey: [`game/${props.id}`]})
+      })
+      return () => s.disconnect()
+    }, [])
     const { isPending, error, data } = useQuery({
         queryKey: [`game/${props.id}`],
         queryFn: () =>
-            fetch(`/game/${props.id}`).then((res) =>
-                res.json(),
-        ),
+          fetch(`/game/${props.id}`).then((res) =>
+            res.json(),
+      ),
     })
     const mutation = useMutation({
-        mutationFn: ({row, col}: {row: number, col: number}) =>
-            axios.post(`/move/${props.id}`, {row, col}).then(() => {}),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: [`game/${props.id}`]})
-        }
+      mutationFn: ({row, col}: {row: number, col: number}) =>
+        axios.post(`/move/${props.id}`, {row, col}).then(() => {}),
+      onSuccess: () => {
+        queryClient.invalidateQueries({queryKey: [`game/${props.id}`]})
+      }
     })
     
     if (isPending) return <p>'Loading Boards...'</p>
@@ -28,10 +38,9 @@ export const Game = (props) => {
     if (error) return <p>'An error has occurred: ' + {error.message}</p>
     
     const game = data.id ? data : { cells: [[null, null, null], [null, null, null], [null, null, null]], nextTurn: "not found"}
-
+    
     const clickCell = (row: number, col: number) => {
-        mutation.mutate({row: row, col: col})
-      
+      mutation.mutate({row: row, col: col})
     }
 
     const resetBoard = () => {
