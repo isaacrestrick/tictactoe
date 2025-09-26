@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
 const queryClient = new QueryClient()
+import { io, Socket } from "socket.io-client";
 
 
 const App = () => {
@@ -16,6 +17,9 @@ const App = () => {
         setCurrentMatchId(localStorage.getItem("currentMatch"))
       }
     }, [])
+
+    // const socket = io()
+    // socket.emit('hello', 'world');
 
     const matchHandler = (id) => {
       setCurrentMatchId(id)
