@@ -1,0 +1,43 @@
+{
+  "name": "make_tic_tac_toe_move",
+  "description": "Given a tic tac toe board and player, return the board with a move made for that player",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "board": {
+        "type": "array",
+        "description": "Current tic tac toe board as a 3x3 array of cells, each cell is 'X', 'O', or null",
+        "items": {
+          "type": "array",
+          "description": "Row of the board",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Cell value: 'X', 'O', or null",
+            "enum": [
+              "X",
+              "O",
+              null
+            ]
+          }
+        }
+      },
+      "player": {
+        "type": "string",
+        "description": "Current player making the move: 'X' or 'O'",
+        "enum": [
+          "X",
+          "O"
+        ]
+      }
+    },
+    "required": [
+      "board",
+      "player"
+    ],
+    "additionalProperties": false
+  }
+}

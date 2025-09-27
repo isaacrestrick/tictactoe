@@ -9,14 +9,26 @@ import axios from 'axios'
 import { io, Socket } from "socket.io-client"
 
 export const Game = (props) => {
-
     const queryClient = useQueryClient()
+    const [validTurn, setValidTurn] = useState(null)
     useEffect(() => {
       const s = io()
-      s.on('update_board', () => {
+      s.on(`update_board`, () => {
         queryClient.invalidateQueries({queryKey: [`game/${props.id}`]})
       })
-      return () => s.disconnect()
+
+      s.on('valid_turn', (message) => {
+        console.log("valid turn received: ", message)
+        setValidTurn(message.validTurn)
+      })
+
+      s.emit('join', { id: props.id})
+
+      return () => {
+        s.emit('leave', { id: props.id})
+        s.disconnect()
+        sessionStorage.clear()
+      }
     }, [])
     const { isPending, error, data } = useQuery({
         queryKey: [`game/${props.id}`],
@@ -40,7 +52,9 @@ export const Game = (props) => {
     const game = data.id ? data : { cells: [[null, null, null], [null, null, null], [null, null, null]], nextTurn: "not found"}
     
     const clickCell = (row: number, col: number) => {
-      mutation.mutate({row: row, col: col})
+      if (game.nextTurn === validTurn) {
+        mutation.mutate({row: row, col: col})
+      }
     }
 
     const resetBoard = () => {
@@ -59,8 +73,8 @@ export const Game = (props) => {
     const GameMessage = () => {
       return <>
         {!game.id && <p className='text-center text-xl'>Uh oh, game not found!</p>}
-        {!game.winner && <p className='text-center text-xl'>Current player is {game.nextTurn}</p>}
-        {game.winner && game.winner !== "tie" && <p className='text-center text-xl'>And the winner is: {game.winner}!! reset? <ResetButton /></p>}
+        {!game.winner && <p className='text-center text-xl'>It's {game.nextTurn}'s turn. You are {validTurn === "spectator" ? "a spectator": validTurn}</p>}
+        {game.winner && game.winner !== "tie" && <p className='text-center text-xl'>And the winner is: {game.winner}!! {validTurn !== game.winner && validTurn === "spectator" ? "" : validTurn === game.winner ? "Congratulations!" : "Better luck next time..."} reset? <ResetButton /></p>}
         {game.winner === "tie" && <p className='text-center text-xl'>Uh oh, it is a tie. reset? <ResetButton /></p>}
       </>
     }
@@ -101,7 +115,7 @@ export const Game = (props) => {
 
     return (
       <div className="flex flex-col items-center space-y-6">
-        <h1 className="m-6 text-3xl font-bold underline text-center">Tic Tac Toe Board:</h1>
+        <h1 className="m-6 text-3xl font-bold underline text-center">Tic Tac Toe Board: {props.id}</h1>
         <GameMessage />
         <TicTacToeBoard />
         <BackButton />
