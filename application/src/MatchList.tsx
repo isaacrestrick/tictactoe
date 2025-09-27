@@ -42,6 +42,8 @@ export const MatchList = (props) => {
 
   const matchData = data 
   const games = matchData.games 
+  const playerInfo = new Map<string, Array<Array<string>>>(matchData.players)
+  console.log(playerInfo)
   const gamesVisible = false
 
   const createNewGame = () => {
@@ -63,7 +65,7 @@ export const MatchList = (props) => {
         <div className="bg-white border black mt-4 ml-4 w-[30%] h-15 flex flex-col items-center justify-center" onClick={() => createNewGame()}><p className="ml-2 text-lg">Against Yourself...</p></div>
         </div>
         <h1 className = "mt-4 text-xl">Current and Previous Matches</h1>
-        {gamesSortedIdDescending.map(game => <div key={game.id} className="bg-white border black mt-4 ml-4 w-[48%] h-10 flex flex-col items-center justify-center" onClick={() => setMatchId(game.id)}><p className="ml-2 text-md">game: {game.id}. {game.winner ? `Winner? ${game.winner}` : `Current turn: ${game.nextTurn}`}. Player(s): 2/2. Spectator(s): 1</p></div>)}
+        {gamesSortedIdDescending.map(game => <div key={game.id} className="bg-white border black mt-4 ml-4 w-[48%] h-10 flex flex-col items-center justify-center" onClick={() => setMatchId(game.id)}><p className="ml-2 text-md">game: {game.id}. {game.winner ? `Winner? ${game.winner}` : `Current turn: ${game.nextTurn}`}. Player(s): {playerInfo.get(String(game.id)) ? playerInfo.get(String(game.id)).length : 0} / {2}. {playerInfo.get(String(game.id)) && playerInfo.get(String(game.id)).length === 2 ? "Spectate?" : "Join?"}</p></div>)}
     </div>
   )
 

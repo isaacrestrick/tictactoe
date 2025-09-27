@@ -47,9 +47,10 @@ io.on('connection', (socket) => {
                 turn = 'O'
             }
         }
-        //console.log(livePlayers, {validTurn: turn})
+        console.log(livePlayers, {validTurn: turn})
         //console.log("joinin this id: ", socket.id)
         socket.emit('valid_turn', {validTurn: turn})
+        io.emit("update_matches")
     })
     socket.on('leave', (message) => {
         const id = String(message.id)
@@ -61,6 +62,7 @@ io.on('connection', (socket) => {
             livePlayers.set(id, livePlayers.get(id).filter(turnsocket => turnsocket[1] !== socket.id))
         }
         console.log("after update", livePlayers)
+        io.emit("update_matches")
     })
 })
 
@@ -122,7 +124,8 @@ app.post("/move/:id", async (req, res) => {
 
 app.get("/games", async (req, res) => {
     const result = await db.select().from(gamesTable)
-    res.json({"games": result})
+    console.log("live players in games", livePlayers)
+    res.json({"games": result, "players": Array.from(livePlayers.entries())})
 })
 
 app.post("/create", async (req, res) => {
