@@ -1,0 +1,6 @@
+Sockets:
+- helped with a vite express hiccup
+- helped w useEffect
+
+DB:
+- snippet on getting an array

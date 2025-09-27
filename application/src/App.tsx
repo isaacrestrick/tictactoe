@@ -13,8 +13,8 @@ const App = () => {
     const [currentMatchId, setCurrentMatchId] = useState(null)
 
     useEffect(() => {
-      if (localStorage.getItem("currentMatch") !== null && localStorage.getItem("currentMatch") !== undefined) {
-        setCurrentMatchId(localStorage.getItem("currentMatch"))
+      if (sessionStorage.getItem("currentMatch") !== null && sessionStorage.getItem("currentMatch") !== undefined) {
+        setCurrentMatchId(sessionStorage.getItem("currentMatch"))
       }
     }, [])
 
@@ -24,14 +24,12 @@ const App = () => {
     const matchHandler = (id) => {
       setCurrentMatchId(id)
       if (id === null) {
-        localStorage.removeItem("currentMatch")
+        sessionStorage.removeItem("currentMatch")
       }
       else {
-        localStorage.setItem("currentMatch", id)
+        sessionStorage.setItem("currentMatch", id)
       }
     }
-
-    const currentMatchInLocalStorage = localStorage.getItem("currentMatch")
 
     return (
       <QueryClientProvider client={queryClient}>
