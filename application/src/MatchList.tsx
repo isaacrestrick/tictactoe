@@ -62,7 +62,7 @@ export const MatchList = (props) => {
 
   return (
     <div className="flex flex-col items-center">
-        <h1 className = "mt-4 text-2xl">Tic Tac Toe: Match Selector. Bored? 192.168.1.154:5173</h1>
+        <h1 className = "mt-4 text-2xl">Tic Tac Toe: Match Selector</h1>
 
         <div className = "flex flex-row w-[48%]">
         <div className="bg-white border black mt-4 ml-4 w-[30%] h-15 flex flex-col items-center justify-center" onClick={() => createNewGame(null)}><p className="ml-2 text-lg">Create New Game</p></div>
